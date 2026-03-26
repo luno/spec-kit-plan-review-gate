@@ -4,12 +4,14 @@ Spec Kit extension for requiring a plan to be reviewed before proceeding with `/
 
 ## What It Does
 
-After `/speckit.plan` completes, this extension automatically:
+When `/speckit.tasks` is invoked, this extension runs a mandatory `before_tasks` check that verifies `spec.md` and `plan.md` have been merged to the default branch via a merge request (or pull request). If either file is new (not yet on the default branch), task generation is blocked.
 
-1. Reads the generated `spec.md` and `plan.md` artifacts
-2. Commits the spec artifacts to the current branch
-3. Creates a merge request (GitLab) or pull request (GitHub) for code review
-4. Gates `/speckit.tasks` — the user must get the plan reviewed before generating tasks
+### Flow
+
+1. Run `/speckit.specify` and `/speckit.plan` to create spec artifacts
+2. Commit, push, and create an MR/PR for review
+3. Get the MR/PR reviewed and merged
+4. Now `/speckit.tasks` will pass the gate and generate tasks
 
 ## Installation
 
@@ -24,30 +26,22 @@ git clone https://github.com/luno/spec-kit-plan-review.git
 specify extension add plan-review --dev ./spec-kit-plan-review
 ```
 
-## Usage
+## How It Works
 
-The extension hooks into the Spec Kit lifecycle automatically. After running `/speckit.plan`, the review gate fires and:
+The extension registers a mandatory `before_tasks` hook. When `/speckit.tasks` runs, it:
 
-1. Stages and commits all spec artifacts
-2. Pushes the branch and creates an MR/PR with a summary of key decisions
-3. Stops — you must get the MR/PR reviewed before running `/speckit.tasks`
+1. Locates the feature's `spec.md` and `plan.md`
+2. Checks whether both files exist on the default branch (`main`/`master`)
+3. If either file is new or has uncommitted changes — **blocks task generation**
+4. If both files are merged and clean — **allows task generation to proceed**
 
-You can also invoke it manually:
-
-```
-/speckit.plan-review.request
-```
+There is no skip option. The gate is based on git state, not user confirmation.
 
 ## Hooks
 
-| Hook        | Event     | Behaviour                                              |
-|-------------|-----------|--------------------------------------------------------|
-| after_plan  | Mandatory | Fires automatically after `/speckit.plan` completes    |
-
-## Platform Support
-
-- **GitLab** — creates a merge request via `glab` CLI or GitLab MCP tools
-- **GitHub** — creates a pull request via `gh` CLI
+| Hook          | Type      | Behaviour                                                        |
+|---------------|-----------|------------------------------------------------------------------|
+| before_tasks  | Mandatory | Blocks `/speckit.tasks` unless spec.md and plan.md are merged    |
 
 ## License
 
