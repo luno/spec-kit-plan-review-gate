@@ -73,12 +73,22 @@ To unblock:
 This gate ensures implementation plans are reviewed before task generation begins.
 ```
 
-**IMPORTANT**: When blocked, you MUST stop execution entirely. Do NOT continue with task generation. Do NOT offer to skip this check. The whole point of this extension is to prevent /speckit.tasks from running until the plan has been reviewed and merged.
+**IMPORTANT**: When blocked, you MUST stop execution entirely. Do NOT continue with task generation. Do NOT offer to skip this check unless the user explicitly passes `--skip-review`. The whole point of this extension is to prevent /speckit.tasks from running until the plan has been reviewed and merged.
+
+### 4. Override Check
+
+If the user passes `--skip-review` in their `/speckit.tasks` arguments (via `$ARGUMENTS`), skip the git checks and allow task generation to proceed. Print a warning:
+
+```
+Plan review gate: SKIPPED (--skip-review)
+Warning: proceeding without a merged plan review. This is not recommended for production features.
+```
 
 ## Key Rules
 
-- This is a hard gate — there is no skip option
-- Do NOT generate tasks if the check fails
-- Do NOT offer workarounds to bypass this check
+- This is a hard gate by default — it blocks task generation unless spec.md and plan.md are merged
+- The only override is `--skip-review` passed explicitly by the user
+- Do NOT generate tasks if the check fails and no override is present
+- Do NOT suggest `--skip-review` when blocked — only honour it if the user provides it themselves
 - The check is based on git state, not user confirmation
 - Only spec.md and plan.md are checked (other artifacts like research.md are not required)
