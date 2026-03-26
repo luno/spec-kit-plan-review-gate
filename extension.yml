@@ -1,0 +1,33 @@
+schema_version: "1.0"
+
+extension:
+  id: "plan-review"
+  name: "Plan Review Gate"
+  version: 1.0.0
+  description: "Spec Kit extension for requiring a plan to be reviewed before proceeding with /speckit.tasks"
+  author: "luno"
+  repository: "https://github.com/luno/spec-kit-plan-review"
+  license: "MIT"
+  homepage: "https://github.com/luno/spec-kit-plan-review"
+
+requires:
+  speckit_version: ">=0.1.0"
+
+provides:
+  commands:
+    - name: "speckit.plan-review.request"
+      file: "commands/request.md"
+      description: "Request a review of spec.md and plan.md before proceeding to task generation"
+      aliases: ["speckit.plan-review"]
+
+hooks:
+  after_plan:
+    command: "speckit.plan-review.request"
+    optional: false
+    description: "Require plan review before proceeding to task generation"
+
+tags:
+  - "review"
+  - "quality"
+  - "workflow"
+  - "gate"
