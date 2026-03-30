@@ -1,5 +1,10 @@
 # spec-kit-plan-review-gate
 
+[![Spec Kit](https://img.shields.io/badge/spec--kit-extension-blue?logo=github)](https://github.com/github/spec-kit)
+[![Version](https://img.shields.io/badge/version-1.0.0-green)](https://github.com/luno/spec-kit-plan-review-gate/releases)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Issues](https://img.shields.io/github/issues/luno/spec-kit-plan-review-gate)](https://github.com/luno/spec-kit-plan-review-gate/issues)
+
 Spec Kit extension for requiring a merge request before proceeding with `/speckit.tasks`.
 
 ## What It Does
